@@ -215,6 +215,40 @@ function toggleLike(id) {
 
 function detail(id){let c=cars.find(x=>x.id===id);if(!c)return;document.getElementById('detailContent').innerHTML=`<article class="car"><img src="${c.photo||photo3}" alt="Автомобиль"><div class="carbody"><h2>${esc(c.name)}</h2><p class="spec">${c.year} · ${esc(c.desc)}</p><div class="price">${money(c.price)}</div><p class="location">⌖ ${esc(c.city)}</p><p>Свяжись с продавцом, чтобы уточнить детали и договориться о просмотре.</p><button class="primary" onclick="alert('Чат с продавцом подключим после настройки Telegram и базы данных.')">Написать продавцу</button><button class="secondary" onclick="toggleLike(${c.id});detail(${c.id})">${c.liked?'♥ В избранном':'♡ В избранное'}</button></div></article>`;showPage('detail')}
 function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===id));window.scrollTo(0,0)}
+function renderProfile() {
+  const nameEl = document.getElementById('profileName');
+  const usernameEl = document.getElementById('profileUsername');
+  const idEl = document.getElementById('profileId');
+  const myCarsEl = document.getElementById('myCars');
+
+  if (!nameEl || !usernameEl || !idEl || !myCarsEl) return;
+
+  if (tgUser) {
+    const fullName = [tgUser.first_name, tgUser.last_name]
+      .filter(Boolean)
+      .join(' ');
+
+    nameEl.textContent = fullName || 'Пользователь LIOREN';
+    usernameEl.textContent = tgUser.username
+      ? '@' + tgUser.username
+      : 'Пользователь Telegram';
+    idEl.textContent = 'ID: ' + tgUser.id;
+  } else {
+    nameEl.textContent = 'Пользователь LIOREN';
+    usernameEl.textContent = 'Открой LIOREN через Telegram';
+    idEl.textContent = '';
+  }
+
+  const myCars = tgUser
+    ? cars.filter(car =>
+        Number(car.sellerTelegramId) === Number(tgUser.id)
+      )
+    : [];
+
+  myCarsEl.innerHTML = myCars.length
+    ? myCars.map(renderCard).join('')
+    : '<div class="empty">Пока нет твоих объявлений.</div>';
+}
 function sortCars(){cheaper=!cheaper;renderCars()}
 function resetFilters(){['brandFilter','priceFilter','cityFilter'].forEach(id=>document.getElementById(id).value='');activeFilters={};renderCars()}
 function applyFilters(){activeFilters={brand:document.getElementById('brandFilter').value.toLowerCase().trim(),price:Number(document.getElementById('priceFilter').value)||null,city:document.getElementById('cityFilter').value.toLowerCase().trim()};showPage('home');renderCars()}
