@@ -1,331 +1,169 @@
+
 <!DOCTYPE html>
-
 <html lang="ru">
-
 <head>
-
-  <meta charset="UTF-8">
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <meta name="theme-color" content="#101114">
-
-  <title>LIOREN — Авторынок</title>
-
-  <style>
-
-    * { box-sizing: border-box; }
-
-    body {
-
-      margin: 0;
-
-      background: #101114;
-
-      color: #fff;
-
-      font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif;
-
-    }
-
-    header {
-
-      padding: 24px 20px;
-
-      border-bottom: 1px solid #292a30;
-
-      display: flex;
-
-      align-items: center;
-
-      justify-content: space-between;
-
-    }
-
-    .logo {
-
-      font-size: 25px;
-
-      font-weight: 800;
-
-      letter-spacing: 4px;
-
-    }
-
-    .region { color: #a5a5ad; font-size: 12px; }
-
-    main { padding: 22px 16px 100px; }
-
-    h1 { font-size: 29px; margin: 8px 0; }
-
-    .subtitle { color: #999ba5; font-size: 14px; }
-
-    .search {
-
-      width: 100%;
-
-      padding: 15px;
-
-      margin: 22px 0 18px;
-
-      border: 1px solid #33343c;
-
-      border-radius: 12px;
-
-      background: #1b1c21;
-
-      color: white;
-
-      font-size: 15px;
-
-    }
-
-    .filters {
-
-      display: flex;
-
-      gap: 8px;
-
-      overflow-x: auto;
-
-      padding-bottom: 18px;
-
-    }
-
-    .filter {
-
-      flex-shrink: 0;
-
-      border: 1px solid #373840;
-
-      color: #ddd;
-
-      background: #1b1c21;
-
-      padding: 10px 14px;
-
-      border-radius: 20px;
-
-    }
-
-    .section {
-
-      display: flex;
-
-      justify-content: space-between;
-
-      align-items: center;
-
-      margin: 12px 0 16px;
-
-    }
-
-    h2 { font-size: 19px; margin: 0; }
-
-    .count { color: #90919a; font-size: 12px; }
-
-    .empty {
-
-      border: 1px dashed #3b3c44;
-
-      border-radius: 16px;
-
-      padding: 32px 20px;
-
-      text-align: center;
-
-      background: #17181d;
-
-    }
-
-    .car-icon { font-size: 42px; }
-
-    .empty h3 { font-size: 17px; }
-
-    .empty p { color: #a1a2aa; font-size: 14px; line-height: 1.5; }
-
-    .add {
-
-      width: 100%;
-
-      padding: 15px;
-
-      border: 0;
-
-      border-radius: 12px;
-
-      background: #e8c77a;
-
-      color: #161616;
-
-      font-size: 15px;
-
-      font-weight: 700;
-
-      margin-top: 18px;
-
-    }
-
-    nav {
-
-      position: fixed;
-
-      bottom: 0;
-
-      left: 0;
-
-      right: 0;
-
-      background: #17181d;
-
-      border-top: 1px solid #303139;
-
-      display: flex;
-
-      justify-content: space-around;
-
-      padding: 13px 4px calc(13px + env(safe-area-inset-bottom));
-
-    }
-
-    nav button {
-
-      background: none;
-
-      border: 0;
-
-      color: #a4a4ad;
-
-      font-size: 11px;
-
-    }
-
-    nav button span {
-
-      display: block;
-
-      font-size: 21px;
-
-      margin-bottom: 5px;
-
-    }
-
-    nav button.active { color: #e8c77a; }
-
-    button, input { font-family: inherit; }
-
-    button { cursor: pointer; }
-
-  </style>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#07111f">
+<title>LIOREN — Авторынок России</title>
+<style>
+:root{--bg:#07111f;--panel:#101e30;--panel2:#15263b;--blue:#087cff;--text:#f4f7fc;--muted:#91a4bc;--line:#24364c}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;padding-bottom:84px}
+button,input{font:inherit}
+button{cursor:pointer}
+header{height:62px;padding:0 17px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);background:#091522}
+.logo{font-size:23px;font-weight:850;letter-spacing:3px;color:#fff}
+.logo b{color:#1685ff}
+.region{font-size:12px;color:#c2d4e9;background:var(--panel);padding:9px 11px;border-radius:10px}
+main{max-width:680px;margin:auto;padding:18px 14px}
+h1{font-size:27px;line-height:1.2;margin:5px 0 8px}
+.sub{color:var(--muted);font-size:14px;margin:0 0 20px}
+.search{display:flex;align-items:center;gap:9px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:0 13px;margin-bottom:12px}
+.search span{font-size:20px;color:var(--muted)}
+.search input{width:100%;padding:15px 0;background:none;border:0;outline:0;color:white;font-size:14px}
+.tools{display:flex;gap:8px;margin-bottom:20px}
+.tool{background:var(--panel);border:1px solid var(--line);color:#e1eaf7;border-radius:10px;padding:10px 12px;font-size:12px}
+.section{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px}
+h2{font-size:19px;margin:0}
+.muted{font-size:12px;color:var(--muted)}
+.cards{display:grid;gap:14px}
+.car{overflow:hidden;border:1px solid var(--line);background:var(--panel);border-radius:15px}
+.car img{width:100%;height:190px;object-fit:cover;display:block;background:#15263b}
+.carbody{padding:12px}
+.carname{font-weight:750;font-size:16px}
+.spec{font-size:12px;color:var(--muted);margin-top:5px}
+.price{font-size:20px;font-weight:800;margin-top:9px}
+.location{font-size:12px;color:#65b5ff;margin-top:9px}
+.heart{float:right;background:#24364c;border:0;border-radius:50%;width:34px;height:34px;color:white;font-size:19px;margin-left:8px}
+.heart.liked{color:#ff5474}
+.primary{display:block;width:100%;padding:15px;border:0;border-radius:12px;background:var(--blue);color:white;font-weight:750;margin-top:18px}
+.secondary{display:block;width:100%;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--panel2);color:white;margin-top:10px}
+.empty{padding:28px 14px;text-align:center;border:1px dashed var(--line);border-radius:14px;color:var(--muted);font-size:14px}
+nav{position:fixed;z-index:10;bottom:0;left:0;right:0;background:#091522;border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:9px 2px calc(9px + env(safe-area-inset-bottom))}
+nav button{background:none;border:0;color:var(--muted);font-size:10px;min-width:55px}
+nav button span{display:block;font-size:21px;margin-bottom:3px}
+nav button.active{color:#1685ff}
+.page{display:none}
+.page.active{display:block}
+.field{display:block;width:100%;margin:8px 0 14px;padding:13px;background:var(--panel);border:1px solid var(--line);border-radius:10px;color:white}
+label{font-size:13px;color:#c3d3e7}
+.back{background:none;border:0;color:#62b2ff;padding:0;margin:0 0 20px}
+@media(min-width:520px){.cards{grid-template-columns:1fr 1fr}.car img{height:160px}}
+</style>
 </head>
-
 <body>
+<header>
+  <div class="logo"><b>◆</b> LIOREN</div>
+  <button class="region" onclick="showPage('region')">⌖ Вся Россия ▾</button>
+</header>
 
-  <header>
+<main>
+<section class="page active" id="home">
+  <h1>Найди свой автомобиль</h1>
+  <p class="sub">Тысячи возможностей по всей России</p>
+  <div class="search"><span>⌕</span><input id="search" placeholder="Марка, модель или город..." oninput="renderCars()"></div>
+  <div class="tools">
+    <button class="tool" onclick="showPage('filters')">☷ Фильтры</button>
+    <button class="tool" onclick="sortCars()">↕ Сначала дешевле</button>
+  </div>
+  <div class="section"><h2>Автомобили</h2><span class="muted" id="count"></span></div>
+  <div id="cars" class="cards"></div>
+  <button class="primary" onclick="showPage('publish')">＋ Разместить объявление</button>
+</section>
 
-    <div class="logo">LIOREN</div>
+<section class="page" id="filters">
+  <button class="back" onclick="showPage('home')">← Назад</button>
+  <div class="section"><h2>Фильтры</h2><button class="tool" onclick="resetFilters()">Сбросить</button></div>
+  <label>Марка и модель</label><input class="field" id="brandFilter" placeholder="Например, BMW">
+  <label>Максимальная цена, ₽</label><input class="field" id="priceFilter" type="number" placeholder="Например, 3000000">
+  <label>Город</label><input class="field" id="cityFilter" placeholder="Любой город">
+  <button class="primary" onclick="applyFilters()">Показать автомобили</button>
+</section>
 
-    <div class="region">РОССИЯ · ВСЯ СТРАНА</div>
+<section class="page" id="detail">
+  <button class="back" onclick="showPage('home')">← К объявлениям</button>
+  <div id="detailContent"></div>
+</section>
 
-  </header>
+<section class="page" id="publish">
+  <button class="back" onclick="showPage('home')">← Назад</button>
+  <h2>Разместить объявление</h2>
+  <p class="sub">Расскажи покупателям о своём автомобиле</p>
+  <form id="publishForm">
+    <label>Марка и модель</label><input class="field" name="name" required placeholder="Например, BMW 5 серии">
+    <label>Год выпуска</label><input class="field" name="year" required type="number" min="1950" max="2027" placeholder="2020">
+    <label>Цена, ₽</label><input class="field" name="price" required type="number" min="1" placeholder="2500000">
+    <label>Город</label><input class="field" name="city" required placeholder="Калининград">
+    <label>Описание</label><textarea class="field" name="description" rows="4" placeholder="Состояние, пробег, комплектация..."></textarea>
+    <button class="primary" type="submit">Опубликовать локально</button>
+  </form>
+  <p class="muted">Демонстрационный режим: объявление пока сохраняется только в этом открытом приложении.</p>
+</section>
 
-  <main>
+<section class="page" id="favorites">
+  <h2>Избранное</h2><p class="sub">Автомобили, которые тебе понравились</p>
+  <div id="favoriteCars" class="cards"></div>
+</section>
 
-    <h1>Найди свой автомобиль</h1>
+<section class="page" id="chats">
+  <h2>Сообщения</h2><p class="sub">Здесь будут переписки с продавцами</p>
+  <div class="empty">Чаты подключим после настройки аккаунтов и базы данных.</div>
+</section>
 
-    <p class="subtitle">Авторынок нового поколения</p>
+<section class="page" id="profile">
+  <h2>Профиль</h2><p class="sub">Твой LIOREN</p>
+  <div class="carbody car"><h3>Добро пожаловать!</h3><p class="muted">Профиль пользователя подключим следующим этапом.</p></div>
+  <button class="secondary" onclick="showPage('publish')">＋ Разместить объявление</button>
+  <button class="secondary" onclick="showPage('favorites')">♡ Избранное</button>
+</section>
 
-    <input id="search" class="search"
+<section class="page" id="region">
+  <button class="back" onclick="showPage('home')">← Назад</button>
+  <h2>Регион поиска</h2>
+  <label>Город</label><input class="field" id="regionInput" placeholder="Вся Россия">
+  <button class="primary" onclick="document.querySelector('.region').textContent='⌖ '+(document.getElementById('regionInput').value||'Вся Россия')+' ▾';showPage('home')">Применить</button>
+</section>
+</main>
 
-      placeholder="Марка, модель или город..."
+<nav>
+  <button class="active" data-page="home" onclick="showPage('home')"><span>⌂</span>Главная</button>
+  <button data-page="favorites" onclick="showPage('favorites')"><span>♡</span>Избранное</button>
+  <button data-page="publish" onclick="showPage('publish')"><span>⊕</span>Разместить</button>
+  <button data-page="chats" onclick="showPage('chats')"><span>▢</span>Чаты</button>
+  <button data-page="profile" onclick="showPage('profile')"><span>♙</span>Профиль</button>
+</nav>
 
-      oninput="filterCars()">
-
-    <div class="filters">
-
-      <button class="filter" onclick="setFilter('Все')">Все авто</button>
-
-      <button class="filter" onclick="setFilter('Седан')">Седаны</button>
-
-      <button class="filter" onclick="setFilter('Внедорожник')">Внедорожники</button>
-
-      <button class="filter" onclick="setFilter('Купе')">Купе</button>
-
-    </div>
-
-    <div class="section">
-
-      <h2>Объявления</h2>
-
-      <span class="count" id="count">0 автомобилей</span>
-
-    </div>
-
-    <div id="cars" class="empty">
-
-      <div class="car-icon">🚘</div>
-
-      <h3>Пока здесь тихо</h3>
-
-      <p>Объявления появятся здесь.<br>Стань одним из первых продавцов.</p>
-
-    </div>
-
-    <button class="add" onclick="alert('Добавление объявлений подключим следующим этапом.')">
-
-      + Разместить объявление
-
-    </button>
-
-  </main>
-
-  <nav>
-
-    <button class="active" onclick="goHome()"><span>⌂</span>Главная</button>
-
-    <button onclick="alert('Поиск расширим следующим этапом.')"><span>⌕</span>Поиск</button>
-
-    <button onclick="alert('Избранное добавим следующим этапом.')"><span>♡</span>Избранное</button>
-
-    <button onclick="alert('Профиль подключим следующим этапом.')"><span>♙</span>Профиль</button>
-
-  </nav>
-
-  <script>
-
-    let currentFilter = 'Все';
-
-    function setFilter(filter) {
-
-      currentFilter = filter;
-
-      filterCars();
-
-    }
-
-    function filterCars() {
-
-      document.getElementById('count').textContent = '0 автомобилей';
-
-      document.getElementById('cars').style.display = 'block';
-
-    }
-
-    function goHome() {
-
-      document.getElementById('search').value = '';
-
-      currentFilter = 'Все';
-
-      filterCars();
-
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-
-    }
-
-  </script>
-
+<script>
+const photo1='https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=900&q=80';
+const photo2='https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?auto=format&fit=crop&w=900&q=80';
+const photo3='https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?auto=format&fit=crop&w=900&q=80';
+let cars=[
+{id:1,name:'BMW 5 серии',year:2019,price:2450000,city:'Москва',desc:'Дизель · Автомат · Хорошее состояние',photo:photo1,liked:false},
+{id:2,name:'Mercedes-Benz C-класс',year:2020,price:3100000,city:'Санкт-Петербург',desc:'Бензин · Автомат · Отличное состояние',photo:photo2,liked:false},
+{id:3,name:'Toyota Camry',year:2021,price:2150000,city:'Казань',desc:'Надёжный автомобиль для города и путешествий',photo:photo3,liked:false}
+];
+let cheaper=false,activeFilters={};
+function money(n){return Number(n).toLocaleString('ru-RU')+' ₽'}
+function renderCard(c){return `<article class="car"><img src="${c.photo||photo3}" alt="Автомобиль" loading="lazy" onclick="detail(${c.id})"><div class="carbody"><button class="heart ${c.liked?'liked':''}" onclick="toggleLike(${c.id})">${c.liked?'♥':'♡'}</button><div class="carname" onclick="detail(${c.id})">${esc(c.name)}</div><div class="spec">${c.year} · ${esc(c.desc||'Автомобиль с пробегом')}</div><div class="price">${money(c.price)}</div><div class="location">⌖ ${esc(c.city)}</div></div></article>`}
+function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function renderCars(){
+let q=(document.getElementById('search')?.value||'').toLowerCase();
+let list=cars.filter(c=>(c.name+' '+c.city+' '+c.year).toLowerCase().includes(q)&&(!activeFilters.brand||c.name.toLowerCase().includes(activeFilters.brand))&&(!activeFilters.city||c.city.toLowerCase().includes(activeFilters.city))&&(!activeFilters.price||c.price<=activeFilters.price));
+if(cheaper)list.sort((a,b)=>a.price-b.price);
+document.getElementById('count').textContent=list.length+' авто';
+document.getElementById('cars').innerHTML=list.length?list.map(renderCard).join(''):'<div class="empty">Ничего не найдено. Попробуй изменить поиск.</div>';
+renderFavorites();
+}
+function renderFavorites(){let list=cars.filter(c=>c.liked);document.getElementById('favoriteCars').innerHTML=list.length?list.map(renderCard).join(''):'<div class="empty">Пока нет избранных автомобилей.</div>'}
+function toggleLike(id){let c=cars.find(x=>x.id===id);if(c)c.liked=!c.liked;renderCars()}
+function detail(id){let c=cars.find(x=>x.id===id);if(!c)return;document.getElementById('detailContent').innerHTML=`<article class="car"><img src="${c.photo||photo3}" alt="Автомобиль"><div class="carbody"><h2>${esc(c.name)}</h2><p class="spec">${c.year} · ${esc(c.desc)}</p><div class="price">${money(c.price)}</div><p class="location">⌖ ${esc(c.city)}</p><p>Свяжись с продавцом, чтобы уточнить детали и договориться о просмотре.</p><button class="primary" onclick="alert('Чат с продавцом подключим после настройки Telegram и базы данных.')">Написать продавцу</button><button class="secondary" onclick="toggleLike(${c.id});detail(${c.id})">${c.liked?'♥ В избранном':'♡ В избранное'}</button></div></article>`;showPage('detail')}
+function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===id));window.scrollTo(0,0)}
+function sortCars(){cheaper=!cheaper;renderCars()}
+function resetFilters(){['brandFilter','priceFilter','cityFilter'].forEach(id=>document.getElementById(id).value='');activeFilters={};renderCars()}
+function applyFilters(){activeFilters={brand:document.getElementById('brandFilter').value.toLowerCase().trim(),price:Number(document.getElementById('priceFilter').value)||null,city:document.getElementById('cityFilter').value.toLowerCase().trim()};showPage('home');renderCars()}
+document.getElementById('publishForm').addEventListener('submit',e=>{e.preventDefault();let f=new FormData(e.target);cars.unshift({id:Date.now(),name:f.get('name'),year:f.get('year'),price:Number(f.get('price')),city:f.get('city'),desc:f.get('description')||'С пробегом',photo:photo3,liked:false});e.target.reset();renderCars();showPage('home');alert('Объявление добавлено в демонстрационный список. Пока оно не отправлено в интернет.')});
+renderCars();
+</script>
 </body>
-
 </html>
