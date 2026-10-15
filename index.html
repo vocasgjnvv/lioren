@@ -204,6 +204,40 @@ document.getElementById('publishForm').addEventListener('submit', async e => {
   e.preventDefault();
 
   const f = new FormData(e.target);
+  const file = f.get('photoFile');
+  let photoUrl = photo3;
+
+  if (file && file.size > 0) {
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+      alert('Выбери фотографию в формате JPG, PNG или WebP.');
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Фотография должна быть не больше 5 МБ.');
+      return;
+    }
+
+    const path = Date.now() + '-' +
+      file.name.replace(/[^a-zA-Z0-9._-]/g, '-');
+
+    const { error: uploadError } = await db
+      .storage
+      .from('car-photos')
+      .upload(path, file, {
+        contentType: file.type,
+        upsert: false
+      });
+
+    if (uploadError) {
+      alert('Ошибка загрузки фотографии: ' + uploadError.message);
+      return;
+    }
+
+    photoUrl = db.storage
+      .from('car-photos')
+      .getPublicUrl(path).data.publicUrl;
+  }
 
   const newCar = {
     name: f.get('name'),
@@ -211,7 +245,7 @@ document.getElementById('publishForm').addEventListener('submit', async e => {
     price: Number(f.get('price')),
     city: f.get('city'),
     description: f.get('description') || 'С пробегом',
-    photo: photo3
+    photo: photoUrl
   };
 
   const { data, error } = await db
@@ -236,6 +270,13 @@ document.getElementById('publishForm').addEventListener('submit', async e => {
     photo: data.photo || photo3,
     liked: false
   });
+
+  saveCars();
+  e.target.reset();
+  renderCars();
+  showPage('home');
+  alert('Объявление опубликовано!');
+});
 
   saveCars();
   e.target.reset();
