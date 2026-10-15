@@ -299,6 +299,10 @@ document.getElementById('publishForm').addEventListener('submit', async e => {
     price: Number(f.get('price')),
     city: f.get('city'),
     description: f.get('description') || 'С пробегом',
+    seller_telegram_id: tgUser ? tgUser.id : null,
+    seller_name: tgUser
+      ? ([tgUser.first_name, tgUser.last_name].filter(Boolean).join(' ') || tgUser.username || 'Пользователь Telegram')
+      : null,
     photo: photoUrl
   };
 
