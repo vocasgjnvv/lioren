@@ -115,8 +115,20 @@ label{font-size:13px;color:#c3d3e7}
 </section>
 
 <section class="page" id="profile">
-  <h2>Профиль</h2><p class="sub">Твой LIOREN</p>
-  <div class="carbody car"><h3>Добро пожаловать!</h3><p class="muted">Профиль пользователя подключим следующим этапом.</p></div>
+  <h2>Мой профиль</h2>
+  <p class="sub">Твой личный кабинет LIOREN</p>
+
+  <div class="carbody car">
+    <h3 id="profileName">Пользователь LIOREN</h3>
+    <p class="muted" id="profileUsername">Telegram не подключён</p>
+    <p class="muted" id="profileId"></p>
+  </div>
+
+  <h3>Мои объявления</h3>
+  <div id="myCars">
+    <p class="muted">Здесь будут твои объявления.</p>
+  </div>
+
   <button class="secondary" onclick="showPage('publish')">＋ Разместить объявление</button>
   <button class="secondary" onclick="showPage('favorites')">♡ Избранное</button>
 </section>
