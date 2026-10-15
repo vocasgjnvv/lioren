@@ -241,13 +241,6 @@ document.getElementById('publishForm').addEventListener('submit', async e => {
   alert('Объявление опубликовано!');
 });
 
-  saveCars();
-  e.target.reset();
-  renderCars();
-  showPage('home');
-  alert('Объявление сохранено на этом устройстве. Другие пользователи его пока не увидят.');
-});
-
 async function loadSharedCars() {
   const { data, error } = await db
     .from('cars')
