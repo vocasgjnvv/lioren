@@ -189,7 +189,27 @@ function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.
 function sortCars(){cheaper=!cheaper;renderCars()}
 function resetFilters(){['brandFilter','priceFilter','cityFilter'].forEach(id=>document.getElementById(id).value='');activeFilters={};renderCars()}
 function applyFilters(){activeFilters={brand:document.getElementById('brandFilter').value.toLowerCase().trim(),price:Number(document.getElementById('priceFilter').value)||null,city:document.getElementById('cityFilter').value.toLowerCase().trim()};showPage('home');renderCars()}
-document.getElementById('publishForm').addEventListener('submit',e=>{e.preventDefault();let f=new FormData(e.target);cars.unshift({id:Date.now(),name:f.get('name'),year:f.get('year'),price:Number(f.get('price')),city:f.get('city'),desc:f.get('description')||'С пробегом',photo:photo3,liked:false});e.target.reset();renderCars();showPage('home');alert('Объявление добавлено в демонстрационный список. Пока оно не отправлено в интернет.')});
+
+document.getElementById('publishForm').addEventListener('submit', e => {
+  e.preventDefault();
+  let f = new FormData(e.target);
+  cars.unshift({
+    id: Date.now(),
+    name: f.get('name'),
+    year: f.get('year'),
+    price: Number(f.get('price')),
+    city: f.get('city'),
+    desc: f.get('description') || 'С пробегом',
+    photo: photo3,
+    liked: false
+  });
+  saveCars();
+  e.target.reset();
+  renderCars();
+  showPage('home');
+  alert('Объявление сохранено на этом устройстве. Другие пользователи его пока не увидят.');
+});
+
 renderCars();
 </script>
 </body>
