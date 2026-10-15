@@ -325,6 +325,8 @@ document.getElementById('publishForm').addEventListener('submit', async e => {
     price: Number(data.price),
     city: data.city,
     desc: data.description || '',
+    sellerTelegramId: data.seller_telegram_id,
+    sellerName: data.seller_name,
     photo: data.photo || photo3,
     liked: false
   });
