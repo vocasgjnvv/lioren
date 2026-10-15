@@ -143,7 +143,27 @@ let cars=[
 {id:2,name:'Mercedes-Benz C-класс',year:2020,price:3100000,city:'Санкт-Петербург',desc:'Бензин · Автомат · Отличное состояние',photo:photo2,liked:false},
 {id:3,name:'Toyota Camry',year:2021,price:2150000,city:'Казань',desc:'Надёжный автомобиль для города и путешествий',photo:photo3,liked:false}
 ];
-let cheaper=false,activeFilters={};
+
+try {
+  const savedCars = localStorage.getItem('lioren_cars');
+  if (savedCars) {
+    const parsedCars = JSON.parse(savedCars);
+    if (Array.isArray(parsedCars)) cars = parsedCars;
+  }
+} catch (error) {
+  console.log('Загрузка сохранённых объявлений пропущена');
+}
+
+function saveCars() {
+  try {
+    localStorage.setItem('lioren_cars', JSON.stringify(cars));
+  } catch (error) {
+    alert('Не удалось сохранить объявления на устройстве');
+  }
+}
+
+let cheaper = false, activeFilters = {};
+
 function money(n){return Number(n).toLocaleString('ru-RU')+' ₽'}
 function renderCard(c){return `<article class="car"><img src="${c.photo||photo3}" alt="Автомобиль" loading="lazy" onclick="detail(${c.id})"><div class="carbody"><button class="heart ${c.liked?'liked':''}" onclick="toggleLike(${c.id})">${c.liked?'♥':'♡'}</button><div class="carname" onclick="detail(${c.id})">${esc(c.name)}</div><div class="spec">${c.year} · ${esc(c.desc||'Автомобиль с пробегом')}</div><div class="price">${money(c.price)}</div><div class="location">⌖ ${esc(c.city)}</div></div></article>`}
 function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
