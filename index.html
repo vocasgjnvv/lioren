@@ -216,6 +216,33 @@ document.getElementById('publishForm').addEventListener('submit', e => {
   alert('Объявление сохранено на этом устройстве. Другие пользователи его пока не увидят.');
 });
 
+async function loadSharedCars() {
+  const { data, error } = await db
+    .from('cars')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Ошибка загрузки объявлений:', error.message);
+    return;
+  }
+
+  if (data && data.length > 0) {
+    cars = data.map(car => ({
+      id: Number(car.id),
+      name: car.name,
+      year: car.year,
+      price: Number(car.price),
+      city: car.city,
+      desc: car.description || '',
+      photo: car.photo || photo3,
+      liked: false
+    }));
+
+    renderCars();
+  }
+}
+
 renderCars();
 </script>
 </body>
