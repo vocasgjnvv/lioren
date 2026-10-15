@@ -278,13 +278,6 @@ document.getElementById('publishForm').addEventListener('submit', async e => {
   alert('Объявление опубликовано!');
 });
 
-  saveCars();
-  e.target.reset();
-  renderCars();
-  showPage('home');
-  alert('Объявление опубликовано!');
-});
-
 async function loadSharedCars() {
   const { data, error } = await db
     .from('cars')
