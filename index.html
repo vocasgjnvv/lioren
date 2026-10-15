@@ -357,6 +357,8 @@ async function loadSharedCars() {
       price: Number(car.price),
       city: car.city,
       desc: car.description || '',
+      sellerTelegramId: car.seller_telegram_id,
+      sellerName: car.seller_name,
       photo: car.photo || photo3,
       liked: false
     }));
