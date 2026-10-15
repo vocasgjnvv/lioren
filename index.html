@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+
+<html lang="ru">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta name="theme-color" content="#101114">
+
+  <title>LIOREN — Авторынок</title>
+
+  <style>
+
+    * { box-sizing: border-box; }
+
+    body {
+
+      margin: 0;
+
+      background: #101114;
+
+      color: #fff;
+
+      font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+
+    }
+
+    header {
+
+      padding: 24px 20px;
+
+      border-bottom: 1px solid #292a30;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: space-between;
+
+    }
+
+    .logo {
+
+      font-size: 25px;
+
+      font-weight: 800;
+
+      letter-spacing: 4px;
+
+    }
+
+    .region { color: #a5a5ad; font-size: 12px; }
+
+    main { padding: 22px 16px 100px; }
+
+    h1 { font-size: 29px; margin: 8px 0; }
+
+    .subtitle { color: #999ba5; font-size: 14px; }
+
+    .search {
+
+      width: 100%;
+
+      padding: 15px;
+
+      margin: 22px 0 18px;
+
+      border: 1px solid #33343c;
+
+      border-radius: 12px;
+
+      background: #1b1c21;
+
+      color: white;
+
+      font-size: 15px;
+
+    }
+
+    .filters {
+
+      display: flex;
+
+      gap: 8px;
+
+      overflow-x: auto;
+
+      padding-bottom: 18px;
+
+    }
+
+    .filter {
+
+      flex-shrink: 0;
+
+      border: 1px solid #373840;
+
+      color: #ddd;
+
+      background: #1b1c21;
+
+      padding: 10px 14px;
+
+      border-radius: 20px;
+
+    }
+
+    .section {
+
+      display: flex;
+
+      justify-content: space-between;
+
+      align-items: center;
+
+      margin: 12px 0 16px;
+
+    }
+
+    h2 { font-size: 19px; margin: 0; }
+
+    .count { color: #90919a; font-size: 12px; }
+
+    .empty {
+
+      border: 1px dashed #3b3c44;
+
+      border-radius: 16px;
+
+      padding: 32px 20px;
+
+      text-align: center;
+
+      background: #17181d;
+
+    }
+
+    .car-icon { font-size: 42px; }
+
+    .empty h3 { font-size: 17px; }
+
+    .empty p { color: #a1a2aa; font-size: 14px; line-height: 1.5; }
+
+    .add {
+
+      width: 100%;
+
+      padding: 15px;
+
+      border: 0;
+
+      border-radius: 12px;
+
+      background: #e8c77a;
+
+      color: #161616;
+
+      font-size: 15px;
+
+      font-weight: 700;
+
+      margin-top: 18px;
+
+    }
+
+    nav {
+
+      position: fixed;
+
+      bottom: 0;
+
+      left: 0;
+
+      right: 0;
+
+      background: #17181d;
+
+      border-top: 1px solid #303139;
+
+      display: flex;
+
+      justify-content: space-around;
+
+      padding: 13px 4px calc(13px + env(safe-area-inset-bottom));
+
+    }
+
+    nav button {
+
+      background: none;
+
+      border: 0;
+
+      color: #a4a4ad;
+
+      font-size: 11px;
+
+    }
+
+    nav button span {
+
+      display: block;
+
+      font-size: 21px;
+
+      margin-bottom: 5px;
+
+    }
+
+    nav button.active { color: #e8c77a; }
+
+    button, input { font-family: inherit; }
+
+    button { cursor: pointer; }
+
+  </style>
+
+</head>
+
+<body>
+
+  <header>
+
+    <div class="logo">LIOREN</div>
+
+    <div class="region">РОССИЯ · ВСЯ СТРАНА</div>
+
+  </header>
+
+  <main>
+
+    <h1>Найди свой автомобиль</h1>
+
+    <p class="subtitle">Авторынок нового поколения</p>
+
+    <input id="search" class="search"
+
+      placeholder="Марка, модель или город..."
+
+      oninput="filterCars()">
+
+    <div class="filters">
+
+      <button class="filter" onclick="setFilter('Все')">Все авто</button>
+
+      <button class="filter" onclick="setFilter('Седан')">Седаны</button>
+
+      <button class="filter" onclick="setFilter('Внедорожник')">Внедорожники</button>
+
+      <button class="filter" onclick="setFilter('Купе')">Купе</button>
+
+    </div>
+
+    <div class="section">
+
+      <h2>Объявления</h2>
+
+      <span class="count" id="count">0 автомобилей</span>
+
+    </div>
+
+    <div id="cars" class="empty">
+
+      <div class="car-icon">🚘</div>
+
+      <h3>Пока здесь тихо</h3>
+
+      <p>Объявления появятся здесь.<br>Стань одним из первых продавцов.</p>
+
+    </div>
+
+    <button class="add" onclick="alert('Добавление объявлений подключим следующим этапом.')">
+
+      + Разместить объявление
+
+    </button>
+
+  </main>
+
+  <nav>
+
+    <button class="active" onclick="goHome()"><span>⌂</span>Главная</button>
+
+    <button onclick="alert('Поиск расширим следующим этапом.')"><span>⌕</span>Поиск</button>
+
+    <button onclick="alert('Избранное добавим следующим этапом.')"><span>♡</span>Избранное</button>
+
+    <button onclick="alert('Профиль подключим следующим этапом.')"><span>♙</span>Профиль</button>
+
+  </nav>
+
+  <script>
+
+    let currentFilter = 'Все';
+
+    function setFilter(filter) {
+
+      currentFilter = filter;
+
+      filterCars();
+
+    }
+
+    function filterCars() {
+
+      document.getElementById('count').textContent = '0 автомобилей';
+
+      document.getElementById('cars').style.display = 'block';
+
+    }
+
+    function goHome() {
+
+      document.getElementById('search').value = '';
+
+      currentFilter = 'Все';
+
+      filterCars();
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    }
+
+  </script>
+
+</body>
+
+</html>
