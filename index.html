@@ -196,19 +196,51 @@ function sortCars(){cheaper=!cheaper;renderCars()}
 function resetFilters(){['brandFilter','priceFilter','cityFilter'].forEach(id=>document.getElementById(id).value='');activeFilters={};renderCars()}
 function applyFilters(){activeFilters={brand:document.getElementById('brandFilter').value.toLowerCase().trim(),price:Number(document.getElementById('priceFilter').value)||null,city:document.getElementById('cityFilter').value.toLowerCase().trim()};showPage('home');renderCars()}
 
-document.getElementById('publishForm').addEventListener('submit', e => {
+
+document.getElementById('publishForm').addEventListener('submit', async e => {
   e.preventDefault();
-  let f = new FormData(e.target);
-  cars.unshift({
-    id: Date.now(),
+
+  const f = new FormData(e.target);
+
+  const newCar = {
     name: f.get('name'),
-    year: f.get('year'),
+    year: Number(f.get('year')),
     price: Number(f.get('price')),
     city: f.get('city'),
-    desc: f.get('description') || 'С пробегом',
-    photo: photo3,
+    description: f.get('description') || 'С пробегом',
+    photo: photo3
+  };
+
+  const { data, error } = await db
+    .from('cars')
+    .insert(newCar)
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Ошибка публикации:', error.message);
+    alert('Не удалось опубликовать объявление: ' + error.message);
+    return;
+  }
+
+  cars.unshift({
+    id: Number(data.id),
+    name: data.name,
+    year: data.year,
+    price: Number(data.price),
+    city: data.city,
+    desc: data.description || '',
+    photo: data.photo || photo3,
     liked: false
   });
+
+  saveCars();
+  e.target.reset();
+  renderCars();
+  showPage('home');
+  alert('Объявление опубликовано!');
+});
+
   saveCars();
   e.target.reset();
   renderCars();
