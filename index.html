@@ -212,7 +212,61 @@ function toggleLike(id) {
   saveCars();
   renderCars();
 }
+let currentEditingId = null;
 
+function startEdit(id) {
+  const car = cars.find(c => c.id === id);
+  if (!car || !tgUser ||
+      String(car.sellerTelegramId) !== String(tgUser.id)) {
+    alert('Можно изменять только свои объявления.');
+    return;
+  }
+
+  currentEditingId = id;
+
+  const form = document.getElementById('publishForm');
+  form.elements.namedItem('name').value = car.name;
+  form.elements.namedItem('year').value = car.year;
+  form.elements.namedItem('price').value = car.price;
+  form.elements.namedItem('city').value = car.city;
+  form.elements.namedItem('description').value = car.desc || '';
+
+  showPage('publish');
+}
+
+async function deleteListing(id) {
+  const car = cars.find(c => c.id === id);
+  if (!car || !tgUser ||
+      String(car.sellerTelegramId) !== String(tgUser.id)) {
+    alert('Можно удалять только свои объявления.');
+    return;
+  }
+
+  if (!confirm('Точно удалить это объявление?')) return;
+
+  const { data, error } = await db
+    .from('cars')
+    .delete()
+    .eq('id', id)
+    .eq('seller_telegram_id', tgUser.id)
+    .select('id');
+
+  if (error) {
+    alert('Не удалось удалить: ' + error.message);
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    alert('Объявление не удалено. Проверь права доступа Supabase.');
+    return;
+  }
+
+  cars = cars.filter(c => c.id !== id);
+  renderCars();
+  renderProfile();
+  showPage('home');
+  alert('Объявление удалено.');
+}
 function detail(id){let c=cars.find(x=>x.id===id);if(!c)return;document.getElementById('detailContent').innerHTML=`<article class="car"><img src="${c.photo||photo3}" alt="Автомобиль"><div class="carbody"><h2>${esc(c.name)}</h2><p class="spec">${c.year} · ${esc(c.desc)}</p><div class="price">${money(c.price)}</div><p class="location">⌖ ${esc(c.city)}</p><p>Свяжись с продавцом, чтобы уточнить детали и договориться о просмотре.</p><button class="primary" onclick="alert('Чат с продавцом подключим после настройки Telegram и базы данных.')">Написать продавцу</button><button class="secondary" onclick="toggleLike(${c.id});detail(${c.id})">${c.liked?'♥ В избранном':'♡ В избранное'}</button></div></article>`;showPage('detail')}
 function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===id));window.scrollTo(0,0)}
 function renderProfile() {
