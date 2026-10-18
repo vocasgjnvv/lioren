@@ -377,24 +377,43 @@ document.getElementById('publishForm').addEventListener('submit', async e => {
     photo: photoUrl
   };
 
+  
   if (currentEditingId !== null) {
-    const { data, error } = await db
-      .from('cars')
-      .update({
-        name: newCar.name,
-        year: newCar.year,
-        price: newCar.price,
-        city: newCar.city,
-        description: newCar.description,
-        photo: newCar.photo
-      })
-      .eq('id', currentEditingId)
-      .eq('seller_telegram_id', tgUser.id)
-      .select()
-      .single();
+    const response = await fetch(
+      'https://gcinhjewfenblwifezbl.supabase.co/functions/v1/edit-car',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          initData: tg?.initData || '',
+          id: currentEditingId,
+          name: newCar.name,
+          year: newCar.year,
+          price: newCar.price,
+          city: newCar.city,
+          description: newCar.description,
+          photo: newCar.photo
+        })
+      }
+    );
 
-    if (error) {
-      alert('Ошибка изменения: ' + error.message);
+    let result;
+    try {
+      result = await response.json();
+    } catch {
+      result = { error: 'Сервер вернул непонятный ответ' };
+    }
+
+    if (!response.ok) {
+      alert('Ошибка изменения: ' + (result.error || response.status));
+      return;
+    }
+
+    const data = result.data;
+    if (!data) {
+      alert('Сервер не вернул обновлённое объявление');
       return;
     }
 
@@ -415,6 +434,7 @@ document.getElementById('publishForm').addEventListener('submit', async e => {
     alert('Объявление изменено!');
     return;
   }
+
 
   const { data, error } = await db
     .from('cars')
