@@ -347,18 +347,80 @@ document.getElementById('publishForm').addEventListener('submit', async e => {
       .getPublicUrl(path).data.publicUrl;
   }
 
-  const newCar = {
-    name: f.get('name'),
-    year: Number(f.get('year')),
-    price: Number(f.get('price')),
-    city: f.get('city'),
-    description: f.get('description') || 'С пробегом',
-    seller_telegram_id: tgUser ? tgUser.id : null,
-    seller_name: tgUser
-      ? ([tgUser.first_name, tgUser.last_name].filter(Boolean).join(' ') || tgUser.username || 'Пользователь Telegram')
-      : null,
-    photo: photoUrl
-  };
+    if (currentEditingId !== null) {
+    const oldCar = cars.find(c => c.id === currentEditingId);
+
+    const changes = {
+      name: newCar.name,
+      year: newCar.year,
+      price: newCar.price,
+      city: newCar.city,
+      description: newCar.description,
+      photo: file && file.size > 0 ? photoUrl : (oldCar?.photo || photo3)
+    };
+
+    const { data, error } = await db
+      .from('cars')
+      .update(changes)
+      .eq('id', currentEditingId)
+      .eq('seller_telegram_id', tgUser.id)
+      .select()
+      .single();
+
+    if (error) {
+      alert('Ошибка изменения: ' + error.message);
+      return;
+    }
+
+    Object.assign(oldCar, {
+      name: data.name,
+      year: data.year,
+      price: Number(data.price),
+      city: data.city,
+      desc: data.description || '',
+      photo: data.photo || photo3
+    });
+
+    currentEditingId = null;
+    e.target.reset();
+    renderCars();
+    renderProfile();
+    showPage('home');
+    alert('Объявление изменено!');
+    return;
+  }
+
+  const { data, error } = await db
+    .from('cars')
+    .insert(newCar)
+    .select()
+    .single();
+
+  if (error) {
+    alert('Не удалось опубликовать: ' + error.message);
+    return;
+  }
+
+  cars.unshift({
+    id: Number(data.id),
+    name: data.name,
+    year: data.year,
+    price: Number(data.price),
+    city: data.city,
+    desc: data.description || '',
+    sellerTelegramId: data.seller_telegram_id,
+    sellerName: data.seller_name,
+    photo: data.photo || photo3,
+    liked: false
+  });
+
+  currentEditingId = null;
+  e.target.reset();
+  renderCars();
+  renderProfile();
+  showPage('home');
+  alert('Объявление опубликовано!');
+});
 
   const { data, error } = await db
     .from('cars')
