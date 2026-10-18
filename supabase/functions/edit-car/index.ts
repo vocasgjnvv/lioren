@@ -171,15 +171,17 @@ if (findError) {
   return json(500, { error: findError.message });
 }
 
-if (
-  !existing ||
-  String(existing.seller_telegram_id) !== String(user.id)
-) {
+if (!existing) {
   return json(404, {
-    error: "Listing not found or not yours",
+    error: `DEBUG: no row found for id=${String(carId)} in cars`,
   });
 }
 
+if (String(existing.seller_telegram_id) !== String(user.id)) {
+  return json(403, {
+    error: `DEBUG: owner mismatch; row owner=${String(existing.seller_telegram_id)}, Telegram user=${String(user.id)}`,
+  });
+}
 const { data, error } = await db
   .from("cars")
   .update(updates)
