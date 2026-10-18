@@ -194,7 +194,7 @@ function saveCars() {
 let cheaper = false, activeFilters = {};
 
 function money(n){return Number(n).toLocaleString('ru-RU')+' ₽'}
-function renderCard(c){return `<article class="car"><img src="${c.photo||photo3}" alt="Автомобиль" loading="lazy" onclick="detail(${c.id})"><div class="carbody"><button class="heart ${c.liked?'liked':''}" onclick="toggleLike(${c.id})">${c.liked?'♥':'♡'}</button><div class="carname" onclick="detail(${c.id})">${esc(c.name)}</div><div class="spec">${c.year} · ${esc(c.desc||'Автомобиль с пробегом')}</div><div class="price">${money(c.price)}</div><div class="location">⌖ ${esc(c.city)}</div></div></article>`}
+function renderCard(c){const own=tgUser&&String(c.sellerTelegramId)===String(tgUser.id);return `<article class="car"><img src="${c.photo||photo3}" alt="Автомобиль" loading="lazy" onclick="detail(${c.id})"><div class="carbody"><button class="heart ${c.liked?'liked':''}" onclick="toggleLike(${c.id})">${c.liked?'♥':'♡'}</button><div class="carname" onclick="detail(${c.id})">${esc(c.name)}</div><div class="spec">${c.year} · ${esc(c.desc||'Автомобиль с пробегом')}</div><div class="price">${money(c.price)}</div><div class="location">⌖ ${esc(c.city)}</div>${own?`<div style="display:flex;gap:8px;margin-top:12px"><button class="primary" onclick="startEdit(${c.id})">✏️ Изменить</button><button class="primary" style="background:#b42335" onclick="deleteListing(${c.id})">🗑 Удалить</button></div>`:''}</div></article>`}
 function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function renderCars(){
 let q=(document.getElementById('search')?.value||'').toLowerCase();
