@@ -195,7 +195,7 @@ if (error) {
 
 if (!data) {
   return json(404, {
-    error: "Listing not found or not yours",
+    error: `DEBUG: update returned no row; id=${String(carId)}, owner=${String(existing.seller_telegram_id)}, user=${String(user.id)}`,
   });
 }
 
