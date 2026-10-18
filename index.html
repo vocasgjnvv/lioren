@@ -346,7 +346,18 @@ document.getElementById('publishForm').addEventListener('submit', async e => {
       .from('car-photos')
       .getPublicUrl(path).data.publicUrl;
   }
-
+  const newCar = {
+    name: f.get('name'),
+    year: Number(f.get('year')),
+    price: Number(f.get('price')),
+    city: f.get('city'),
+    description: f.get('description') || 'С пробегом',
+    seller_telegram_id: tgUser ? tgUser.id : null,
+    seller_name: tgUser
+      ? ([tgUser.first_name, tgUser.last_name].filter(Boolean).join(' ') || tgUser.username || 'Пользователь Telegram')
+      : null,
+    photo: photoUrl
+  };
     if (currentEditingId !== null) {
     const oldCar = cars.find(c => c.id === currentEditingId);
 
