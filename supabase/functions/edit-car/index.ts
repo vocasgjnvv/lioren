@@ -64,11 +64,12 @@ async function verifyTelegram(
     if (calculatedHash !== receivedHash) return null;
 
     const authDate = Number(params.get("auth_date"));
+    const now = Date.now() / 1000;
 
     if (
       !authDate ||
-      Date.now() / 1000 - authDate > 86400 ||
-      authDate > Date.now() / 1000 + 60
+      now - authDate > 86400 ||
+      authDate > now + 60
     ) {
       return null;
     }
@@ -113,7 +114,23 @@ Deno.serve(async (req) => {
       });
     }
 
-    const body = await req.json();
+    let body: Record<string, unknown>;
+
+    try {
+      const parsed = await req.json();
+
+      if (
+        !parsed ||
+        typeof parsed !== "object" ||
+        Array.isArray(parsed)
+      ) {
+        return json(400, { error: "Invalid request body" });
+      }
+
+      body = parsed as Record<string, unknown>;
+    } catch {
+      return json(400, { error: "Invalid JSON body" });
+    }
 
     if (typeof body.initData !== "string") {
       return json(401, {
@@ -134,7 +151,11 @@ Deno.serve(async (req) => {
 
     const carId = body.id;
 
-    if (carId === undefined || carId === null) {
+    if (
+      carId === undefined ||
+      carId === null ||
+      String(carId).trim() === ""
+    ) {
       return json(400, { error: "Missing car ID" });
     }
 
@@ -162,47 +183,68 @@ Deno.serve(async (req) => {
     const db = createClient(PROJECT_URL, SERVICE_ROLE_KEY);
 
     const { data: existing, error: findError } = await db
-  .from("cars")
-  .select("id, seller_telegram_id")
-  .eq("id", carId)
-  .maybeSingle();
+      .from("cars")
+      .select("id, seller_telegram_id")
+      .eq("id", carId)
+      .maybeSingle();
 
-if (findError) {
-  return json(500, { error: findError.message });
-}
+    if (findError) {
+      console.error("edit-car: lookup failed", findError);
 
-if (!existing) {
-  return json(404, {
-    error: `DEBUG: no row found for id=${String(carId)} in cars`,
-  });
-}
+      return json(500, {
+        error: findError.message,
+        code: findError.code,
+        details: findError.details,
+        hint: findError.hint,
+      });
+    }
 
-if (String(existing.seller_telegram_id) !== String(user.id)) {
-  return json(403, {
-    error: `DEBUG: owner mismatch; row owner=${String(existing.seller_telegram_id)}, Telegram user=${String(user.id)}`,
-  });
-}
-const { data, error } = await db
-  .from("cars")
-  .update(updates)
-  .eq("id", carId)
-  .select()
-  .maybeSingle();
+    if (!existing) {
+      return json(404, {
+        error: "Объявление не найдено",
+      });
+    }
 
-if (error) {
-  return json(500, { error: error.message });
-}
+    if (
+      String(existing.seller_telegram_id) !== String(user.id)
+    ) {
+      return json(403, {
+        error: "Нет прав на изменение этого объявления",
+      });
+    }
 
-if (!data) {
-  return json(404, {
-    error: `DEBUG: update returned no row; id=${String(carId)}, owner=${String(existing.seller_telegram_id)}, user=${String(user.id)}`,
-  });
-}
+    const { data, error: updateError } = await db
+      .from("cars")
+      .update(updates)
+      .eq("id", carId)
+      .select()
+      .maybeSingle();
 
-return json(200, { data });
-  } catch {
+    if (updateError) {
+      console.error("edit-car: update failed", updateError);
+
+      return json(500, {
+        error: updateError.message,
+        code: updateError.code,
+        details: updateError.details,
+        hint: updateError.hint,
+      });
+    }
+
+    if (!data) {
+      return json(404, {
+        error: "Обновление не выполнено: запись не найдена",
+      });
+    }
+
+    return json(200, { data });
+  } catch (error) {
+    console.error("edit-car: unexpected error", error);
+
     return json(500, {
-      error: "Unexpected server error",
+      error: error instanceof Error
+        ? error.message
+        : String(error),
     });
   }
 });
