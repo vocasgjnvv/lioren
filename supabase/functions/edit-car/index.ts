@@ -161,25 +161,43 @@ Deno.serve(async (req) => {
 
     const db = createClient(PROJECT_URL, SERVICE_ROLE_KEY);
 
-    const { data, error } = await db
-      .from("cars")
-      .update(updates)
-      .eq("id", carId)
-      .eq("seller_telegram_id", user.id)
-      .select()
-      .maybeSingle();
+    const { data: existing, error: findError } = await db
+  .from("cars")
+  .select("id, seller_telegram_id")
+  .eq("id", carId)
+  .maybeSingle();
 
-    if (error) {
-      return json(500, { error: error.message });
-    }
+if (findError) {
+  return json(500, { error: findError.message });
+}
 
-    if (!data) {
-      return json(404, {
-        error: "Listing not found or not yours",
-      });
-    }
+if (
+  !existing ||
+  String(existing.seller_telegram_id) !== String(user.id)
+) {
+  return json(404, {
+    error: "Listing not found or not yours",
+  });
+}
 
-    return json(200, { data });
+const { data, error } = await db
+  .from("cars")
+  .update(updates)
+  .eq("id", carId)
+  .select()
+  .maybeSingle();
+
+if (error) {
+  return json(500, { error: error.message });
+}
+
+if (!data) {
+  return json(404, {
+    error: "Listing not found or not yours",
+  });
+}
+
+return json(200, { data });
   } catch {
     return json(500, {
       error: "Unexpected server error",
