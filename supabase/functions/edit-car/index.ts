@@ -19,6 +19,7 @@ async function hmac(
     false,
     ["sign"],
   );
+
   return await crypto.subtle.sign(
     "HMAC",
     cryptoKey,
@@ -35,10 +36,11 @@ function toHex(buffer: ArrayBuffer): string {
 async function verifyTelegram(
   initData: string,
   botToken: string,
-): Promise<Record<string, string> | null> {
+): Promise<Record<string, unknown> | null> {
   try {
     const params = new URLSearchParams(initData);
     const receivedHash = params.get("hash");
+
     if (!receivedHash) return null;
 
     params.delete("hash");
@@ -49,7 +51,10 @@ async function verifyTelegram(
       .join("\n");
 
     const secretKey = new Uint8Array(
-      await hmac(new TextEncoder().encode("WebAppData"), botToken),
+      await hmac(
+        new TextEncoder().encode("WebAppData"),
+        botToken,
+      ),
     );
 
     const calculatedHash = toHex(
@@ -59,7 +64,14 @@ async function verifyTelegram(
     if (calculatedHash !== receivedHash) return null;
 
     const authDate = Number(params.get("auth_date"));
-    if (!authDate || Date.now() / 1000 - authDate > 86400) return null;
+
+    if (
+      !authDate ||
+      Date.now() / 1000 - authDate > 86400 ||
+      authDate > Date.now() / 1000 + 60
+    ) {
+      return null;
+    }
 
     const userString = params.get("user");
     if (!userString) return null;
@@ -71,39 +83,57 @@ async function verifyTelegram(
 }
 
 Deno.serve(async (req) => {
-  if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
-  }
-
   const json = (status: number, body: object) =>
     new Response(JSON.stringify(body), {
       status,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: {
+        ...corsHeaders,
+        "Content-Type": "application/json",
+      },
     });
+
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
+  }
 
   if (req.method !== "POST") {
     return json(405, { error: "Method not allowed" });
   }
 
   try {
-    const { TELEGRAM_BOT_TOKEN, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY } =
-      Deno.env.toObject();
+    const {
+      TELEGRAM_BOT_TOKEN,
+      PROJECT_URL,
+      SERVICE_ROLE_KEY,
+    } = Deno.env.toObject();
 
-    if (!TELEGRAM_BOT_TOKEN || !SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
-      return json(500, { error: "Server secrets are not configured" });
+    if (!TELEGRAM_BOT_TOKEN || !PROJECT_URL || !SERVICE_ROLE_KEY) {
+      return json(500, {
+        error: "Server secrets are not configured",
+      });
     }
 
     const body = await req.json();
+
     if (typeof body.initData !== "string") {
-      return json(401, { error: "Missing Telegram authorization" });
+      return json(401, {
+        error: "Missing Telegram authorization",
+      });
     }
 
-    const user = await verifyTelegram(body.initData, TELEGRAM_BOT_TOKEN);
+    const user = await verifyTelegram(
+      body.initData,
+      TELEGRAM_BOT_TOKEN,
+    );
+
     if (!user || !user.id) {
-      return json(401, { error: "Telegram authorization failed" });
+      return json(401, {
+        error: "Telegram authorization failed",
+      });
     }
 
     const carId = body.id;
+
     if (carId === undefined || carId === null) {
       return json(400, { error: "Missing car ID" });
     }
@@ -118,6 +148,7 @@ Deno.serve(async (req) => {
     ];
 
     const updates: Record<string, unknown> = {};
+
     for (const field of allowedFields) {
       if (Object.prototype.hasOwnProperty.call(body, field)) {
         updates[field] = body[field];
@@ -128,7 +159,7 @@ Deno.serve(async (req) => {
       return json(400, { error: "No fields to update" });
     }
 
-    const db = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+    const db = createClient(PROJECT_URL, SERVICE_ROLE_KEY);
 
     const { data, error } = await db
       .from("cars")
@@ -143,11 +174,15 @@ Deno.serve(async (req) => {
     }
 
     if (!data) {
-      return json(404, { error: "Listing not found or not yours" });
+      return json(404, {
+        error: "Listing not found or not yours",
+      });
     }
 
     return json(200, { data });
   } catch {
-    return json(500, { error: "Unexpected server error" });
+    return json(500, {
+      error: "Unexpected server error",
+    });
   }
 });
